@@ -11,16 +11,16 @@ public class SearchController : ControllerBase
     private readonly ISearchService _searchService;
     public SearchController(ISearchService searchService)
     {
-      _searchService = searchService;
+        _searchService = searchService;
     }
 
     [HttpGet]
-    public ApiResponse SearchLaws(string? searchKey = null, string? searchType = "Laws", int pageIndex = 0)
+    public async Task<ApiResponse> SearchLaws(string? searchKey = null, string? searchType = "Laws", int pageIndex = 0)
     {
         if (searchKey != null && !string.IsNullOrWhiteSpace(searchKey))
         {
-            var result = _searchService.Search(searchKey, searchType!, pageIndex);
-            return new ApiResponse(result.data, result.count);
+           var result = await _searchService.Search(searchKey, searchType!, pageIndex);
+            return new ApiResponse(result.data, result.count);                                
         }
         return new ApiResponse();
     }

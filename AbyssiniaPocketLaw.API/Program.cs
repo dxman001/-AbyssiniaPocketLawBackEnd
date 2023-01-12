@@ -1,21 +1,17 @@
+using AbyssiniaPocketLaw.API.CacheService;
+using AbyssiniaPocketLaw.API.Middlewares;
 using AbyssiniaPocketLaw.API.Persistance;
 using AbyssiniaPocketLaw.API.Services;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
-
-
 builder.Services.AddControllers();
 builder.Services.AddScoped<ISearchService,SearchService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<PocketLawDbContext>(
-    opt =>
-         //opt.UseMySql(builder.Configuration.GetConnectionString("PocketLawDB"),
-         //ServerVersion.Parse("8.0.30-mysql")
-         opt.UseMySql(builder.Configuration.GetConnectionString("PocketLawDB"),
-        ServerVersion.Parse("5.7.40-mysql")
-    ));
+builder.Services.AddPocketLawDbContext(builder.Configuration);
+builder.Services.AddMemoryCache();
+builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(
@@ -36,6 +32,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionHandler>();
 app.UseStaticFiles();
 
 app.UseHttpsRedirection();
