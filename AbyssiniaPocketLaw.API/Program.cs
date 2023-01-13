@@ -2,7 +2,6 @@ using AbyssiniaPocketLaw.API.CacheService;
 using AbyssiniaPocketLaw.API.Middlewares;
 using AbyssiniaPocketLaw.API.Persistance;
 using AbyssiniaPocketLaw.API.Services;
-using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -26,7 +25,6 @@ builder.Services.AddCors(options =>
 });
 var app = builder.Build();
 
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -34,6 +32,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<ExceptionHandler>();
+
 app.UseStaticFiles();
 
 app.UseHttpsRedirection();

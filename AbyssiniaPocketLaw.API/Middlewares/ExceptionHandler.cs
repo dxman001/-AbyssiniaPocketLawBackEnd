@@ -1,6 +1,8 @@
 ﻿namespace AbyssiniaPocketLaw.API.Middlewares;
+
 using AbyssiniaPocketLaw.API.DTOs;
 using Microsoft.AspNetCore.Http;
+using System;
 using System.Net;
 using System.Text.Json;
 
@@ -44,12 +46,16 @@ public class ExceptionHandler
                 errorResponse.StatusCode = (int)HttpStatusCode.BadRequest;
                 break;
             default:
-                errorResponse.Error = "Internal server error!";
                 errorResponse.StatusCode = (int)HttpStatusCode.InternalServerError;
                 break;
         }
-     
-        var result = JsonSerializer.Serialize(errorResponse);
+        var serializeOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = true
+        };
+        var result = JsonSerializer.Serialize(errorResponse, serializeOptions);
         await context.Response.WriteAsync(result);
     }
 }
+
