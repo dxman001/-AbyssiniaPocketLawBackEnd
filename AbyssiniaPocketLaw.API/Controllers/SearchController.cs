@@ -15,7 +15,7 @@ public class SearchController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ApiResponse> SearchLaws(string? searchKey = null, string? searchType = "Laws", int pageIndex = 0)
+    public async Task<ApiResponse> Search(string? searchKey = null, string? searchType = "Laws", int pageIndex = 0)
     {
         if (searchKey != null && !string.IsNullOrWhiteSpace(searchKey))
         {

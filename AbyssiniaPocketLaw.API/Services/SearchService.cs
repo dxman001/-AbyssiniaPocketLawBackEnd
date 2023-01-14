@@ -16,10 +16,10 @@ public class SearchService : ISearchService
     {
         _cacheService = cacheService;
     }
-    public async Task<(IEnumerable<BaseEntity>? data,int count)> Search(string searchKey, string? searchType, int pageIndex = 0)
+    public async Task<(IEnumerable<object>? data,int count)> Search(string searchKey, string? searchType, int pageIndex = 0)
     {
         int skipValue = pageIndex * pageSize;
-        var result = searchType switch
+        IEnumerable<object> result = searchType switch
         {
             "Cassations" => await SearchCassations(searchKey),
             _ => await SearchLaws(searchKey)
@@ -28,7 +28,7 @@ public class SearchService : ISearchService
         return (result.Skip(skipValue).Take(pageSize).ToList(), result.Count());
     }
 
-    private async Task<IEnumerable<BaseEntity>> SearchLaws(string searchKey)
+    private async Task<IEnumerable<Law>> SearchLaws(string searchKey)
     {
         IEnumerable<Law> lawsList = await _cacheService.GetData<Law>(lawsCacheKey);
         return lawsList.Where(l =>
@@ -40,7 +40,7 @@ public class SearchService : ISearchService
                    l.Keywords.Contains(searchKey, StringComparison.OrdinalIgnoreCase));
     }
 
-    private async Task<IEnumerable<BaseEntity>> SearchCassations(string searchKey)
+    private async Task<IEnumerable<Cassation>> SearchCassations(string searchKey)
     {
         IEnumerable<Cassation> cassationsList = await _cacheService.GetData<Cassation>(cassationCacheKey); ;
         return cassationsList.Where(l =>
